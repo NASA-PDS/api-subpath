@@ -1,0 +1,28 @@
+server {
+    listen              443 ssl;
+    listen              [::]:443 ssl;
+    server_name         localhost;
+    ssl_certificate     /etc/ssl/self.cert;
+    ssl_certificate_key /etc/ssl/self.key;
+    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+    ssl_session_cache   shared:SSL:512k;
+    ssl_session_timeout 5m;
+    location /my/app/1/ {
+        proxy_pass http://app:8000/;
+        proxy_redirect default;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_ssl_verify off;
+    }
+    location /my/app/1 {
+        return 301 /my/app/1/;
+    }
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
+}
+# -*- mode: nginx; tab-width: 4; -*-

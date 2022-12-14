@@ -1,0 +1,20 @@
+---
+services:
+    web:
+        image: mynginx:latest
+        environment:
+            PROXY_URL: http://app:8000
+            CERT_CN: demo.jpl.nasa.gov
+        ports:
+            -
+                target: 443
+                published: 8443
+                protocol: tcp
+                mode: host
+        depends_on:
+            -   app
+    app:
+        image: myapp:latest
+version: '3.9'
+...
+# -*- mode: YAML; tab-width: 4 -*-
